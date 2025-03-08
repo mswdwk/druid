@@ -36,7 +36,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
     protected final Set<Long> supportOptions = new HashSet<>();
 
     {
-        String[] supportOptions = new String[] {
+        String[] supportOptions = new String[]{
                 "PAGE_CHECKSUM",
                 "TRANSACTIONAL",
                 "BLOCK_FORMAT",
@@ -162,7 +162,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         final Lexer.SavePoint mark = lexer.mark();
                         lexer.nextToken();
                         if (lexer.token() == Token.INDEX || lexer.token() == Token.KEY
-                            || lexer.token() == Token.UNIQUE) {
+                                || lexer.token() == Token.UNIQUE) {
                             local = true;
                         } else if (lexer.token() == Token.FULLTEXT) {
                             lexer.nextToken();
@@ -198,7 +198,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                                     continue;
                                 }
                             } else if (lexer.token() == Token.IDENTIFIER && MySqlUtils.isBuiltinDataType(
-                                lexer.stringVal())) {
+                                    lexer.stringVal())) {
                                 lexer.reset(mark);
                             } else {
                                 MySqlTableIndex idx = new MySqlTableIndex();
@@ -218,7 +218,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         } else if (lexer.identifierEquals(FnvHash.Constants.SPATIAL)) {
                             lexer.nextToken();
                             if (lexer.token() == Token.INDEX || lexer.token() == Token.KEY ||
-                                lexer.token() != Token.IDENTIFIER || !MySqlUtils.isBuiltinDataType(lexer.stringVal())) {
+                                    lexer.token() != Token.IDENTIFIER || !MySqlUtils.isBuiltinDataType(lexer.stringVal())) {
                                 MySqlTableIndex idx = new MySqlTableIndex();
                                 this.exprParser.parseIndex(idx.getIndexDefinition());
                                 idx.setIndexType("SPATIAL");
@@ -856,7 +856,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     for (; ; ) {
                         SQLName name = this.exprParser.name();
                         stmt.getDistributeBy().add(name);
-                        if (lexer.token() == Token.COMMA) {
+                        if (lexer.token() == Token.COMMA) { // consider to judge if it is IDENTIFIER
                             lexer.nextToken();
                             continue;
                         }
@@ -864,6 +864,21 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     }
                     accept(Token.RPAREN);
                     stmt.setDistributeByType(new SQLIdentifierExpr("HASH"));
+                    // hash(id,c2)(g1,g2,g3)
+                    if (lexer.token() == Token.LPAREN) {
+                        accept(Token.LPAREN);
+                        for (; ; ) {
+                            SQLName name = this.exprParser.name();
+                            stmt.getDistributeByHashGroup().add(name);
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            break;
+                        }
+                        accept(Token.RPAREN);
+                    }
+
                 } else if (lexer.identifierEquals(FnvHash.Constants.DUPLICATE)) {
                     lexer.nextToken();
                     accept(Token.LPAREN);

@@ -26,4 +26,22 @@ public class MySqlCreateTableTest162_distributed_by_with_duplicate extends Mysql
                 VisitorFeature.OutputDistributedLiteralInCreateTableStmt, VisitorFeature.OutputUCase)));
     }
 
+    public void test_2() throws Exception {
+        String sql = "CREATE TABLE `test_user` ( `id` int(11) NOT NULL AUTO_INCREMENT ) DISTRIBUTED BY HASH(id)";
+
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) SQLUtils.parseSingleMysqlStatement(sql);
+
+        assertEquals(sql, SQLUtils.toSQLString(stmt, DbType.mysql, new SQLUtils.FormatOption(
+                VisitorFeature.OutputDistributedLiteralInCreateTableStmt, VisitorFeature.OutputUCase)));
+    }
+
+    public void test_3() throws Exception {
+        String sql = "CREATE TABLE `test_user` ( `id` int(11) NOT NULL AUTO_INCREMENT, name varchar(10) ) DISTRIBUTED BY HASH(id,name)(g1,g2,g3)";
+
+        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) SQLUtils.parseSingleMysqlStatement(sql);
+
+        assertEquals(sql, SQLUtils.toSQLString(stmt, DbType.mysql, new SQLUtils.FormatOption(
+                VisitorFeature.OutputDistributedLiteralInCreateTableStmt, VisitorFeature.OutputUCase)));
+    }
+
 }

@@ -2567,6 +2567,7 @@ public class SQLStatementParser extends SQLParser {
     protected boolean alterTableSetRest(SQLAlterTableStatement stmt) {
         return true;
     }
+
     protected void alterTableSet(SQLAlterTableStatement stmt) {
         accept(SET);
         if (lexer.token == TABLESPACE) {
@@ -2812,6 +2813,7 @@ public class SQLStatementParser extends SQLParser {
 
     protected void alterTableAlterComma() {
     }
+
     private void alterTableAlter(SQLAlterTableStatement stmt) {
         lexer.nextToken();
         if (lexer.token == Token.COLUMN) {
@@ -3088,6 +3090,7 @@ public class SQLStatementParser extends SQLParser {
         }
         stmt.addItem(item);
     }
+
     public void parseAlterDrop(SQLAlterTableStatement stmt) {
         lexer.nextToken();
 
@@ -3771,12 +3774,12 @@ public class SQLStatementParser extends SQLParser {
      * First hint_clause isInsert is true, second hint_clause isInsert is false.
      * ***************************************
      * [with_clause]
-     *   INSERT [hint_clause] { INTO | OVERWRITE } [TABLE] table_name
-     *   [(column_list)]
-     *   [ PARTITION (partition_clause)]
+     * INSERT [hint_clause] { INTO | OVERWRITE } [TABLE] table_name
+     * [(column_list)]
+     * [ PARTITION (partition_clause)]
      * {
-     *     [hint_clause] select_statement
-     *   | VALUES (value [, value ...]) [, (value [, value ...]) ...]
+     * [hint_clause] select_statement
+     * | VALUES (value [, value ...]) [, (value [, value ...]) ...]
      * }
      * ***************************************
      */
@@ -3786,6 +3789,7 @@ public class SQLStatementParser extends SQLParser {
     protected void parseInsertOverwrite(SQLInsertInto insertStatement) {
         insertStatement.setOverwrite(true);
     }
+
     protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
         if (lexer.nextIf(OVERWRITE) || lexer.nextIfIdentifier(Constants.OVERWRITE)) {
             parseInsertOverwrite(insertStatement);
@@ -4276,6 +4280,7 @@ public class SQLStatementParser extends SQLParser {
             stmt.setPartitionBy(partitionBy);
         }
     }
+
     public SQLStatement parseCreateMaterializedView() {
         accept(Token.CREATE);
         acceptIdentifier("MATERIALIZED");
@@ -4582,6 +4587,7 @@ public class SQLStatementParser extends SQLParser {
     public void parseCreateTableSupportSchema() {
         accept(Token.DATABASE);
     }
+
     public SQLStatement parseCreateDatabase() {
         accept(CREATE);
         SQLCreateDatabaseStatement stmt = new SQLCreateDatabaseStatement(dbType);
@@ -4841,6 +4847,7 @@ public class SQLStatementParser extends SQLParser {
 
     public void parseUpdateStatementPartition(SQLUpdateStatement updateStatement) {
     }
+
     public SQLUpdateStatement parseUpdateStatement() {
         SQLUpdateStatement updateStatement = createUpdateStatement();
 
@@ -4867,6 +4874,7 @@ public class SQLStatementParser extends SQLParser {
 
     protected void parseUpdateSetComma() {
     }
+
     protected void parseUpdateSet(SQLUpdateStatement update) {
         accept(Token.SET);
 
@@ -4928,8 +4936,10 @@ public class SQLStatementParser extends SQLParser {
 
     public void parseCreateViewAfterName(SQLCreateViewStatement createView) {
     }
+
     public void parseCreateViewAtDataType(SQLColumnDefinition column, SQLName expr) {
     }
+
     public SQLCreateViewStatement parseCreateView() {
         SQLCreateViewStatement createView = new SQLCreateViewStatement(getDbType());
 
@@ -5262,6 +5272,7 @@ public class SQLStatementParser extends SQLParser {
 
     public void parseExplainFormatType(SQLExplainStatement explain) {
     }
+
     public SQLExplainStatement parseExplain() {
         accept(Token.EXPLAIN);
         if (lexer.identifierEquals("PLAN")) {
